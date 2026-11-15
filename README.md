@@ -2,7 +2,7 @@
 
 Aplicação Windows Forms usada pelo operador da central de teleassistência do projeto **Amparo**. A pulseira detecta a queda do idoso, a API abre um alerta e o operador atende esse alerta por aqui.
 
-Versão: **0.1.0** (veja o [CHANGELOG](CHANGELOG.md)).
+Versão: **0.1.1** (veja o [CHANGELOG](CHANGELOG.md)).
 
 ## Ficha da CitizenTech
 
@@ -45,7 +45,7 @@ Idosos que moram sozinhos e as famílias deles, começando por um piloto em Sant
 ## Telas
 
 - **Identificação:** o operador digita o nome. O app lembra o último nome usado.
-- **Fila de alertas:** lista os alertas, com os abertos primeiro (em vermelho) e os em atendimento depois (em amarelo). Atualiza sozinha a cada 10 segundos.
+- **Fila de alertas:** lista os alertas, com os abertos primeiro (em vermelho) e os em atendimento depois (em amarelo). Dentro de cada grupo, os de prioridade alta vêm antes. Atualiza sozinha a cada 10 segundos.
 - **Detalhe do alerta:** dados do idoso, contatos de emergência, histórico e os botões de ação (iniciar atendimento, liguei para o idoso, liguei para o contato, acionei o SAMU, encerrar como resolvido ou falso alarme).
 - **Cadastro de idoso:** nome, nascimento, bairro, endereço, observações e contatos de emergência.
 

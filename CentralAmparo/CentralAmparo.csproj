@@ -9,7 +9,7 @@
     <RootNamespace>CentralAmparo</RootNamespace>
     <AssemblyTitle>Central Amparo</AssemblyTitle>
     <Product>Central Amparo</Product>
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
