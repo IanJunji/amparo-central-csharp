@@ -36,14 +36,26 @@ public class FormDetalheAlerta : Form
         MaximizeBox = false;
         StartPosition = FormStartPosition.CenterParent;
 
-        // Coluna da esquerda: alerta, idoso e contatos
-        lblAlerta.Location = new Point(20, 15);
-        lblAlerta.Size = new Size(400, 90);
-        lblIdoso.Location = new Point(20, 110);
-        lblIdoso.Size = new Size(400, 120);
-        var lblContatos = new Label { Text = "Contatos de emergência:", Location = new Point(20, 240), AutoSize = true };
-        lstContatos.Location = new Point(20, 265);
-        lstContatos.Size = new Size(400, 120);
+        // Coluna da esquerda: alerta, idoso e contatos, um embaixo do outro.
+        // Os textos crescem conforme o conteúdo, então nada fica cortado.
+        var colunaEsquerda = new FlowLayoutPanel
+        {
+            Location = new Point(10, 10),
+            Size = new Size(420, 520),
+            FlowDirection = FlowDirection.TopDown,
+            WrapContents = false,
+            AutoScroll = true
+        };
+        lblAlerta.AutoSize = true;
+        lblAlerta.MaximumSize = new Size(390, 0);
+        lblAlerta.Margin = new Padding(10, 5, 3, 10);
+        lblIdoso.AutoSize = true;
+        lblIdoso.MaximumSize = new Size(390, 0);
+        lblIdoso.Margin = new Padding(10, 0, 3, 10);
+        var lblContatos = new Label { Text = "Contatos de emergência:", AutoSize = true, Margin = new Padding(10, 0, 3, 3) };
+        lstContatos.Size = new Size(390, 120);
+        lstContatos.Margin = new Padding(10, 0, 3, 3);
+        colunaEsquerda.Controls.AddRange(new Control[] { lblAlerta, lblIdoso, lblContatos, lstContatos });
 
         // Coluna da direita: histórico, observação e botões
         var lblHistorico = new Label { Text = "Histórico do atendimento:", Location = new Point(450, 15), AutoSize = true };
@@ -71,7 +83,7 @@ public class FormDetalheAlerta : Form
         btnResolvido.Click += async (s, e) => await Encerrar(StatusAlerta.Resolvido);
         btnFalsoAlarme.Click += async (s, e) => await Encerrar(StatusAlerta.FalsoAlarme);
 
-        Controls.AddRange(new Control[] { lblAlerta, lblIdoso, lblContatos, lstContatos, lblHistorico, lstHistorico,
+        Controls.AddRange(new Control[] { colunaEsquerda, lblHistorico, lstHistorico,
             lblObservacao, txtObservacao, btnFechar });
         CancelButton = btnFechar;
 
@@ -110,7 +122,10 @@ public class FormDetalheAlerta : Form
 
             lstHistorico.Items.Clear();
             foreach (var a in _alerta.Atendimentos)
-                lstHistorico.Items.Add($"{a.CriadoEm.ToLocalTime():HH:mm} {a.AcaoTexto()} - {a.Operador}: {a.Observacao}");
+            {
+                var observacao = a.Observacao == null ? "" : ": " + a.Observacao;
+                lstHistorico.Items.Add($"{a.CriadoEm.ToLocalTime():HH:mm} {a.AcaoTexto()} - {a.Operador}{observacao}");
+            }
 
             // Só deixa clicar no que faz sentido para o status atual.
             btnIniciar.Enabled = _alerta.Status == StatusAlerta.Aberto;
@@ -158,6 +173,14 @@ public class FormDetalheAlerta : Form
 
     private async Task Encerrar(StatusAlerta resultado)
     {
+        // Confere a observação antes de pedir confirmação, para não perguntar à toa.
+        if (resultado == StatusAlerta.Resolvido && txtObservacao.Text.Trim() == "")
+        {
+            MessageBox.Show("Escreva na observação o que aconteceu antes de encerrar.", "Atenção");
+            txtObservacao.Focus();
+            return;
+        }
+
         var texto = resultado == StatusAlerta.Resolvido ? "RESOLVIDO" : "FALSO ALARME";
         if (MessageBox.Show($"Encerrar este alerta como {texto}?", "Confirmar", MessageBoxButtons.YesNo) != DialogResult.Yes)
             return;
