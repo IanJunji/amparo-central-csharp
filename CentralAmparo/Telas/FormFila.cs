@@ -28,15 +28,21 @@ public class FormFila : Form
         var painel = new FlowLayoutPanel { Dock = DockStyle.Top, Height = 55, Padding = new Padding(8) };
         var btnAbrir = new Button { Text = "Abrir alerta", Size = new Size(140, 35) };
         var btnAtualizar = new Button { Text = "Atualizar", Size = new Size(120, 35) };
+        var btnCadastrar = new Button { Text = "Cadastrar idoso", Size = new Size(160, 35) };
         chkEncerrados.Text = "Mostrar encerrados";
         chkEncerrados.AutoSize = true;
         chkEncerrados.Margin = new Padding(10, 10, 10, 0);
 
         btnAbrir.Click += (s, e) => AbrirAlerta();
         btnAtualizar.Click += async (s, e) => await Atualizar();
+        btnCadastrar.Click += async (s, e) =>
+        {
+            new FormCadastroIdoso(_repositorio).ShowDialog(this);
+            await Atualizar();
+        };
         chkEncerrados.CheckedChanged += async (s, e) => await Atualizar();
 
-        painel.Controls.AddRange(new Control[] { btnAbrir, btnAtualizar });
+        painel.Controls.AddRange(new Control[] { btnAbrir, btnAtualizar, btnCadastrar });
 
         // Só no modo demonstração: botão que faz o papel da pulseira.
         if (repositorio is RepositorioDemo demo)
