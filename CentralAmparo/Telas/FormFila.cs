@@ -68,11 +68,15 @@ public class FormFila : Form
         grade.Columns.Add("id", "Nº");
         grade.Columns["id"]!.FillWeight = 40;
         grade.Columns.Add("tipo", "Tipo");
+        grade.Columns["tipo"]!.FillWeight = 120;
         grade.Columns.Add("idoso", "Idoso");
         grade.Columns.Add("bairro", "Bairro");
         grade.Columns.Add("status", "Situação");
         grade.Columns.Add("prioridade", "Prioridade");
         grade.Columns.Add("chance", "Chance de queda");
+        grade.Columns["chance"]!.FillWeight = 130;
+        // O cabeçalho quebra a linha em vez de cortar o texto.
+        grade.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
         grade.Columns.Add("recebido", "Recebido em");
         grade.CellDoubleClick += (s, e) => { if (e.RowIndex >= 0) AbrirAlerta(); };
 
@@ -103,8 +107,12 @@ public class FormFila : Form
             if (!chkEncerrados.Checked)
                 alertas = alertas.Where(a => !a.EstaEncerrado).ToList();
 
-            // Abertos primeiro, depois em atendimento, depois encerrados. Dentro de cada grupo, o mais recente primeiro.
-            alertas = alertas.OrderBy(a => a.Status).ThenByDescending(a => a.CriadoEm).ToList();
+            // Abertos primeiro, depois em atendimento, depois encerrados.
+            // Dentro de cada grupo, a prioridade mais alta primeiro e, empatando, o mais recente.
+            alertas = alertas.OrderBy(a => a.Status)
+                .ThenBy(a => a.OrdemPrioridade)
+                .ThenByDescending(a => a.CriadoEm)
+                .ToList();
 
             grade.Rows.Clear();
             foreach (var alerta in alertas)

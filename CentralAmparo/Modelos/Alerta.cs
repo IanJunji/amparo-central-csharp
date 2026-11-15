@@ -35,6 +35,10 @@ public class Alerta
         }
     }
 
+    // Usado para ordenar a fila: 0 = alta, 1 = média, 2 = baixa.
+    [JsonIgnore]
+    public int OrdemPrioridade => Prioridade switch { "Alta" => 0, "Média" => 1, _ => 2 };
+
     public void IniciarAtendimento()
     {
         if (EstaEncerrado)
