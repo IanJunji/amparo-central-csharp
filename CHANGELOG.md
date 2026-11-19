@@ -2,6 +2,17 @@
 
 Mudanças da Central Amparo (desktop C#). As versões seguem o versionamento semântico.
 
+## [0.2.0] - 2026-11-15
+
+### Adicionado
+
+- Tela de login no modo API: o operador entra com usuário e senha, e a central manda o token em todas as chamadas. O nome que vai nos atendimentos é o que a API devolve.
+- Se o token vencer ou a API reiniciar, a central entra de novo sozinha com o mesmo usuário.
+
+### Alterado
+
+- O modo API passou a exigir login, porque a API agora recusa chamadas sem token.
+
 ## [0.1.1] - 2026-11-15
 
 ### Corrigido

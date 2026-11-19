@@ -15,17 +15,22 @@ static class Program
         var config = JsonSerializer.Deserialize<Configuracao>(
             File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "appsettings.json")), OpcoesJson.Padrao)!;
 
-        IRepositorio repositorio;
+        // Modo API: login com usuário e senha. Modo demo: só o nome do operador.
         if (config.Modo == "Api")
-            repositorio = new RepositorioApi(config.ApiUrl);
+        {
+            var api = new RepositorioApi(config.ApiUrl);
+            var login = new FormLogin(api);
+            if (login.ShowDialog() != DialogResult.OK)
+                return;
+            Application.Run(new FormFila(api, login.Operador!));
+        }
         else
-            repositorio = new RepositorioDemo();
-
-        var identificacao = new FormIdentificacao();
-        if (identificacao.ShowDialog() != DialogResult.OK)
-            return;
-
-        Application.Run(new FormFila(repositorio, identificacao.Operador!));
+        {
+            var identificacao = new FormIdentificacao();
+            if (identificacao.ShowDialog() != DialogResult.OK)
+                return;
+            Application.Run(new FormFila(new RepositorioDemo(), identificacao.Operador!));
+        }
     }
 }
 

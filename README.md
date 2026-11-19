@@ -2,7 +2,7 @@
 
 Aplicação Windows Forms usada pelo operador da central de teleassistência do projeto **Amparo**. A pulseira detecta a queda do idoso, a API abre um alerta e o operador atende esse alerta por aqui.
 
-Versão: **0.1.1** (veja o [CHANGELOG](CHANGELOG.md)).
+Versão: **0.2.0** (veja o [CHANGELOG](CHANGELOG.md)).
 
 ## Ficha da CitizenTech
 
@@ -44,7 +44,8 @@ Idosos que moram sozinhos e as famílias deles, começando por um piloto em Sant
 
 ## Telas
 
-- **Identificação:** o operador digita o nome. O app lembra o último nome usado.
+- **Login (modo API):** o operador entra com usuário e senha. A API devolve um token que vai em todas as chamadas; se o token vencer, a central entra de novo sozinha. O app lembra o último usuário, nunca a senha.
+- **Identificação (modo demo):** o operador só digita o nome. O app lembra o último nome usado.
 - **Fila de alertas:** lista os alertas, com os abertos primeiro (em vermelho) e os em atendimento depois (em amarelo). Dentro de cada grupo, os de prioridade alta vêm antes. Atualiza sozinha a cada 10 segundos.
 - **Detalhe do alerta:** dados do idoso, contatos de emergência, histórico e os botões de ação (iniciar atendimento, liguei para o idoso, liguei para o contato, acionei o SAMU, encerrar como resolvido ou falso alarme).
 - **Cadastro de idoso:** nome, nascimento, bairro, endereço, observações e contatos de emergência.
@@ -70,19 +71,19 @@ Ou abra `CentralAmparo.sln` no Visual Studio e aperte F5.
 O arquivo `CentralAmparo/appsettings.json` define de onde vêm os dados:
 
 - `"modo": "Demo"` (padrão): usa o arquivo `dados-demo.json`, criado ao lado do executável com 3 idosos e 3 alertas fictícios. Tem o botão **Simular queda (demo)**. Para recomeçar do zero, apague esse arquivo.
-- `"modo": "Api"`: usa a API do `backend-soa` no endereço de `apiUrl`.
+- `"modo": "Api"`: usa a API do Amparo (ASP.NET Core) no endereço de `apiUrl`. A API precisa estar rodando. Usuário de teste (fictício): `operador`, senha `amparo123`.
 
 ## Tecnologias
 
 - C# e .NET 10 com Windows Forms
 - System.Text.Json para ler e gravar JSON
-- HttpClient para chamar a API do backend
+- HttpClient para chamar a API do backend, com login por token JWT
 
 ## Organização
 
 - `Modelos/`: classes do domínio (Alerta, Atendimento, Idoso, ContatoEmergencia, Operador)
 - `Dados/`: `IRepositorio` com duas versões, `RepositorioApi` e `RepositorioDemo`
-- `Telas/`: os quatro formulários
+- `Telas/`: os formulários (login, identificação, fila, detalhe do alerta e cadastro de idoso)
 
 ## Versionamento
 
